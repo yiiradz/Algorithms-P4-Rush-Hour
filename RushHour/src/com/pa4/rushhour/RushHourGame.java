@@ -1,15 +1,26 @@
 package com.pa4.rushhour;
 
+import java.util.HashMap;
+import java.util.Queue;
+
 public class RushHourGame {
     Vehicle[][] board;
+    Queue<String> queue;
+    HashMap<String, String> hashMap;
 
+    /**
+     * Initialize all of the game requirements
+     */
     public RushHourGame() {
         // Initialize the board as a 6x6 2D array of vehicles
         board = new Vehicle[6][6];
     }
 
+    /**
+     * Prints out the current state of the game board with each location being indicated by the
+     * first letter of the vehicle color
+     */
     public void print() {
-        // For each location
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 6; j++) {
                 Vehicle v = board[i][j];
@@ -33,6 +44,10 @@ public class RushHourGame {
      */
     public boolean isFree(int row, int col) {
         return (board[row][col] == null);
+    }
+
+    public boolean hasPathBeenSeen(String str) {
+        return (hashMap.containsKey(str));
     }
 
     /**
