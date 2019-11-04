@@ -63,7 +63,8 @@ public class main {
             // Else read in from a file
         } else {
             //String path = "/Users/yiradz/College/JUN_SEM1/GALGORITMS/RushHour/input.txt";
-            String path = "/Users/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
+            //String path = "/Users/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
+            String path = "/home/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
             open_file(path);
         }
 
