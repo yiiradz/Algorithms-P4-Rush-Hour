@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Queue;
 
 public class RushHourGame {
-    Vehicle[][] board;
-    Queue<String> queue;
+    Queue<Vehicle[][]> queue;
     HashMap<String, String> hashMap;
+    Vehicle[][] board;
 
     /**
      * Initialize all of the game requirements
@@ -31,6 +31,9 @@ public class RushHourGame {
                     String color = String.valueOf(v.color.charAt(0));
                     System.out.print("[" + color + "]");
                 }
+            }
+            if (i == 2) {
+                System.out.print("<--");
             }
             System.out.println();
         }

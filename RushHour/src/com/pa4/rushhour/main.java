@@ -8,8 +8,6 @@ package com.pa4.rushhour;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -33,7 +31,7 @@ public class main {
             Vehicle vehicle = new Vehicle(type, color, orientation, row, col);
             vehicle.print();
             // Validate the vehicle, print, and insert
-            if(vehicle.validate()) {
+            if(vehicle.isValid()) {
                 System.out.println("Vehicle is valid!");
                  if (!game.insertVehicle(vehicle)) {
                      System.out.println("Unable to insert vehicle onto the board!");

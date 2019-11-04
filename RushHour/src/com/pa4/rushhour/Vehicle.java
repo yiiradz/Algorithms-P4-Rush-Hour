@@ -46,7 +46,7 @@ public class Vehicle {
      * @brief Validates the values which define the current vehicle.
      * Note that we don't check color since that wouldn't really be useful.
      */
-    public boolean validate() {
+    public boolean isValid() {
         boolean isCar = (type.equals("car"));
         boolean isTruck = (type.equals("truck"));
         boolean isVertical = (direction.equals("v"));
@@ -67,19 +67,19 @@ public class Vehicle {
         // Check if the coordinates are valid
         if (isValid) {
             // The type is valid, so we can check direction
-            if (type == "car") {
-                if (direction == "v" && (row > 3 || row < 0)) {
+            if (type.equals("car")) {
+                if (direction.equals("v") && (row > 4 || row < 0)) {
                     System.out.println("Car row is invalid! <" + row + "," + col + ">");
                 }
-                if (direction == "h" && (col > 3 || col < 0)) {
+                if (direction.equals("h") && (col > 4 || col < 0)) {
                     System.out.println("Car col is invalid! <" + row + "," + col + ">");
                 }
             }
-            if (type == "truck") {
-                if (direction == "v" && (row > 2 || row < 0)) {
+            if (type.equals("truck")) {
+                if (direction.equals("v") && (row > 3 || row < 0)) {
                     System.out.println("Truck row is invalid! <" + row + "," + col + ">");
                 }
-                if (direction == "h" && (col > 2 || col < 0)) {
+                if (direction.equals("h") && (col > 3 || col < 0)) {
                     System.out.println("Truck col is invalid! <" + row + "," + col + ">");
                 }
             }
