@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="JavaProject5">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/JavaMaze/dist/JavaProject5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
