@@ -16,6 +16,8 @@ import java.util.logging.Logger;
  * @author Yayira and Keeton
  */
 public class main {
+    // Class variables
+    private static RushHourGame game;
 
     static void read_file_data(Scanner input) {
         // Read in the number of cars and trucks
@@ -30,9 +32,12 @@ public class main {
             int col = input.nextInt() - 1; // Convert to index
             Vehicle vehicle = new Vehicle(type, color, orientation, row, col);
             vehicle.print();
-            // Validate the vehicle and print
+            // Validate the vehicle, print, and insert
             if(vehicle.validate()) {
                 System.out.println("Vehicle is valid!");
+                 if (!game.insertVehicle(vehicle)) {
+                     System.out.println("Unable to insert vehicle onto the board!");
+                }
             }
             System.out.println();
         }
@@ -48,6 +53,7 @@ public class main {
     }
 
     public static void main(String[] args) {
+        game = new RushHourGame();
         boolean gradel_mode = false;
         // If gradel mode, read in from STDIN
         if (gradel_mode) {
