@@ -41,6 +41,7 @@ public class main {
             }
             System.out.println();
         }
+        game.print();
     }
 
     static void open_file(String s) {

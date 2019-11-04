@@ -8,6 +8,33 @@ public class RushHourGame {
         board = new Vehicle[6][6];
     }
 
+    public void print() {
+        // For each location
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 6; j++) {
+                Vehicle v = board[i][j];
+                if (v == null) {
+                    System.out.print("[ ]");
+                } else {
+                    // We want to emphasize the red car so we uppercase it
+                    String color = String.valueOf(v.color.charAt(0));
+                    System.out.print("[" + color + "]");
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    /**
+     * Returns a boolean on whether a space is free (null) or not.
+     * @param row Row location of vehicle (leftmost).
+     * @param col Column location of vehicle (topmost).
+     * @return Returns true if the location is free.
+     */
+    public boolean isFree(int row, int col) {
+        return (board[row][col] == null);
+    }
+
     /**
      * Inserts a vehicle onto the board using the already provided locations stored in
      * the vehicle object. Used primarily for inserting at initialization.
@@ -33,6 +60,7 @@ public class RushHourGame {
      * @return Returns true if movement occured.
      */
     public boolean moveVehicle(Vehicle vehicle, int spaces) {
+        // TODO: Create checkLeft, checkRight, checkUp, and checkDown functions which take a spaces input
         return false;
     }
 
@@ -49,7 +77,7 @@ public class RushHourGame {
         }
         // Update the locations if they're available
         if (v.direction.equals("v")) {
-            if (board[row][col] == null && board[row + 1][col] == null) {
+            if (isFree(row, col) && isFree(row + 1, col)) {
                 board[row][col] = v;
                 board[row + 1][col] = v;
             } else {
@@ -57,7 +85,7 @@ public class RushHourGame {
             }
         }
         if (v.direction.equals("h")) {
-            if (board[row][col] == null && board[row][col + 1] == null) {
+            if (isFree(row, col) && isFree(row, col + 1)) {
                 board[row][col] = v;
                 board[row][col + 1] = v;
             } else {
@@ -82,7 +110,7 @@ public class RushHourGame {
         }
         // Update the locations if they're available
         if (v.direction.equals("v")) {
-            if (board[row][col] == null && board[row + 1][col] == null && board[row + 2][col] == null) {
+            if (isFree(row, col) && isFree(row + 1, col) && isFree(row + 2, col)) {
                 board[row][col] = v;
                 board[row + 1][col] = v;
                 board[row + 2][col] = v;
@@ -91,7 +119,7 @@ public class RushHourGame {
             }
         }
         if (v.direction.equals("h")) {
-            if (board[row][col] == null && board[row][col + 1] == null && board[row][col + 2] == null) {
+            if (isFree(row, col) && isFree(row, col + 1) && isFree(row, col + 2)) {
                 board[row][col] = v;
                 board[row][col + 1] = v;
                 board[row][col + 2] = v;
