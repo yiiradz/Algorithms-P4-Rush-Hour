@@ -17,29 +17,37 @@ public class Vehicle {
     public String direction = "";  // (h)orizontal or (v)ertical
     public int row = 0;
     public int col = 0;
+    public int id = -1;
 
-    public Vehicle() {
-        this.type = null;
-        this.color = null;
-        this.direction = null;
-        this.row = -1;
-        this.col = -1;
-    }
-
-    public Vehicle(String t, String c, String d, int row, int col) {
+    /**
+     * Constructs a new vehicle for use in a board.
+     * @param t Type of vehicle. Either car or truck.
+     * @param c Color of vehicle. Honeslty doesn't matter.
+     * @param d Direction of vehicle. Either v or h.
+     * @param row Anchor row (leftmost / topmost)
+     * @param col Anchor column (leftmost / topmost)
+     * @param id Vehicle identifier value
+     */
+    public Vehicle(String t, String c, String d, int row, int col, int id) {
         this.type = t;
         this.color = c;
         this.direction = d;
         this.row = row;
         this.col = col;
+        this.id = id;
+        // Red car should always have an ID of 0.
     }
 
+    /**
+     * Prints out all of the vehicle information.
+     */
     public void print() {
         System.out.println("Type: " + type);
         System.out.println("Color: " + color);
         System.out.println("Direction: " + direction);
         System.out.println("Row: " + row);
         System.out.println("Col: " + col);
+        System.out.println("ID: " + id);
     }
 
     /**
@@ -63,6 +71,10 @@ public class Vehicle {
                 System.out.println("Vehicle has invalid direction!");
                 isValid = false;
             }
+        }
+        if (id < 0) {
+            System.out.println("Vehicle has invalid identifier!");
+            isValid = false;
         }
         // Check if the coordinates are valid
         if (isValid) {

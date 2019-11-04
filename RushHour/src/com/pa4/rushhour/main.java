@@ -17,7 +17,7 @@ public class main {
     // Class variables
     private static RushHourGame game;
 
-    static void read_file_data(Scanner input) {
+    static void createGameFromFile(Scanner input) {
         // Read in the number of cars and trucks
         int total_vehicles = input.nextInt();
         // For each vehicle, read the next 5 lines and create a new Vehicle
@@ -28,24 +28,23 @@ public class main {
             String orientation = input.next();
             int row = input.nextInt() - 1; // Convert to index
             int col = input.nextInt() - 1; // Convert to index
-            Vehicle vehicle = new Vehicle(type, color, orientation, row, col);
+            Vehicle vehicle = new Vehicle(type, color, orientation, row, col, current_vehicle);
             vehicle.print();
             // Validate the vehicle, print, and insert
             if(vehicle.isValid()) {
                 System.out.println("Vehicle is valid!");
-                 if (!game.insertVehicle(vehicle)) {
+                 if (!game.activeBoard.insertVehicle(vehicle)) {
                      System.out.println("Unable to insert vehicle onto the board!");
                 }
             }
             System.out.println();
         }
-        game.print();
     }
 
-    static void open_file(String s) {
+    static void openFile(String s) {
         try {
             Scanner sc = new Scanner(new File(s));
-            read_file_data(sc);
+            createGameFromFile(sc);
         } catch (FileNotFoundException ex) {
             System.out.println(ex.getMessage());
         }
@@ -53,19 +52,20 @@ public class main {
 
     public static void main(String[] args) {
         game = new RushHourGame();
-        boolean gradel_mode = false;
+        boolean isGradel = false;
         // If gradel mode, read in from STDIN
-        if (gradel_mode) {
+        if (isGradel) {
             Scanner sc = new Scanner(System.in);
-            read_file_data(sc);
+            createGameFromFile(sc);
             // Else read in from a file
         } else {
             //String path = "/Users/yiradz/College/JUN_SEM1/GALGORITMS/RushHour/input.txt";
             //String path = "/Users/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
             String path = "/home/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
-            open_file(path);
+            openFile(path);
         }
-
+        // Print out the board after we fill it up and then start the game
+        game.print();
+        game.start();
     }
-
 }
