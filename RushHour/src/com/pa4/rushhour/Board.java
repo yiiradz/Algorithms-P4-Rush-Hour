@@ -60,11 +60,14 @@ public class Board {
     public boolean isGameDone() {
         // The red car should always be the first one.
         // We won't do any error checking for that though.
-        Vehicle redCar = vehicles[0];
-        // If we're at position 4/5 then the next location has to be open
-        // and thus we've won the game.
-        if ((redCar.row == 4) && (redCar.col == 2)) {
-            return true;
+        if (vehicles != null) {
+            Vehicle redCar = vehicles[0];
+
+            // If we're at position 4/5 then the next location has to be open
+            // and thus we've won the game.
+            if ((redCar.row == 4) && (redCar.col == 2)) {
+                return true;
+            }
         }
         return false;
     }
@@ -84,18 +87,6 @@ public class Board {
         } else {
             return false;
         }
-    }
-
-    /**
-     * Takes a vehicle and a number of spaces (positive or negative) to move.
-     * For verticle, negative is upwards, and for horizontal negative is left.
-     * @param vehicle Vehicle to be moved.
-     * @param spaces Number of spaces to move, either positive or negative.
-     * @return Returns true if movement occured.
-     */
-    public boolean moveVehicle(Vehicle vehicle, int spaces) {
-        // TODO: Create checkLeft, checkRight, checkUp, and checkDown functions which take a spaces input
-        return false;
     }
 
     /**
@@ -127,12 +118,14 @@ public class Board {
             }
         }
         // Insert the vehicle into the array
-        vehicles[vehicles.length] = v;
+        if (vehicles != null) {
+            vehicles[vehicles.length] = v;
+        }
         return true;
     }
 
     /**
-     * Inserts a truck on the board if all necesarry spaces are free.
+     * Inserts a truck on the board if all necessary spaces are free.
      * @param v Vehicle to be inserted
      * @param row Row location
      * @param col Column location
@@ -163,7 +156,9 @@ public class Board {
                 System.out.println("Cannot place truck at location <" + row + "," + "col" + "> because it won't fit!");
             }
         }
-        vehicles[vehicles.length] = v;
+        if (vehicles != null) {
+            vehicles[vehicles.length] = v;
+        }
         return true;
     }
 
