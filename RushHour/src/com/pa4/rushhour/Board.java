@@ -53,6 +53,7 @@ public class Board {
 
     /**
      * Returns a boolean on whether a space is free (null) or not.
+     *
      * @param row Row location of vehicle (leftmost).
      * @param col Column location of vehicle (topmost).
      * @return Returns true if the location is free.
@@ -63,6 +64,7 @@ public class Board {
 
     /**
      * Checks if the red car is in the winning position.
+     *
      * @return Returns true if the red car is right in front of the exit, and thus wins.
      */
     boolean isGameDone() {
@@ -81,16 +83,69 @@ public class Board {
     }
 
     /**
+     * // Takes in positives and negatives integers and moves vehicle according to parameters
+     * // Finds the vehicle's anchor, removes the car from the board and reinserts it into the board
+     * // check orientation if h, add i to the col; if v, add i to the row
+     * // NOTE: This function does not error check, it assumes that the space given can be used
+     */
+    void moveVehicle(Vehicle v, int i) {
+        // Horizontal orientation
+        if (v.direction == "h") {
+            // Take the vehicle, get it's size, remove it from the current board
+            int vRow = v.row;
+            int vCol = v.col;
+
+            for (int delCol = vCol; delCol < vCol + v.size; delCol++) {
+                // The row remains static in this case, and it's only the Column that changes
+                board[vRow][delCol] = null;
+            }
+
+            // Now reinsert the car into the given parameters
+            int newCol = vCol + i;
+            v.col = newCol;
+
+            // Make a loop that reinserts the vehicle in all of the positions which match its size
+            for (int iCol = v.col; iCol < v.col + v.size; iCol++) {
+                board[v.row][v.col] = v;
+            }
+        }
+
+        // Vertical orientation
+        if (v.direction == "v") {
+            // Take the vehicle, get it's size, remove it from the current board
+            int vRow = v.row;
+            int vCol = v.col;
+
+            for (int delRow = vRow; delRow < vRow + v.size; delRow++) {
+                // The row remains static in this case, and it's only the Column that changes
+                board[delRow][vCol] = null;
+            }
+
+            // Now reinsert the car into the given parameters
+            int newRow = vRow + i;
+            v.row = newRow;
+
+            // Make a loop that reinserts the vehicle in all of the positions which match its size
+            for (int iRow = v.col; iRow < v.row + v.size; iRow++) {
+                board[v.row][v.col] = v;
+            }
+
+        }
+
+
+    }
+
+    /**
      * Inserts a vehicle onto the board using the already provided locations stored in
      * the vehicle object. Used primarily for inserting at initialization.
+     *
      * @param vehicle Vehicle to be inserted.
      * @return Returns true if the insertion occured.
      */
     boolean insertVehicle(Vehicle vehicle) {
         if (vehicle.type.equals("car")) {
             return insertCarAtPosition(vehicle, vehicle.row, vehicle.col);
-        }
-        else if (vehicle.type.equals("truck")) {
+        } else if (vehicle.type.equals("truck")) {
             return insertTruckAtPosition(vehicle, vehicle.row, vehicle.col);
         } else {
             return false;
@@ -98,8 +153,9 @@ public class Board {
     }
 
     /**
-     *  Inserts a car on the board if all necesarry spaces are free.
-     * @param v Vehicle to be inserted
+     * Inserts a car on the board if all necesarry spaces are free.
+     *
+     * @param v   Vehicle to be inserted
      * @param row Row location
      * @param col Column location
      */
@@ -134,7 +190,8 @@ public class Board {
 
     /**
      * Inserts a truck on the board if all necessary spaces are free.
-     * @param v Vehicle to be inserted
+     *
+     * @param v   Vehicle to be inserted
      * @param row Row location
      * @param col Column location
      */
@@ -178,6 +235,7 @@ public class Board {
 
     /**
      * Gets the number of available spaces to the left or above, depending on orientation.
+     *
      * @param v Vehicle to check adjacencies
      * @return Negative value associated with number of spaces to the left or above.
      */
@@ -216,6 +274,7 @@ public class Board {
 
     /**
      * Gets the number of spaces to the right or below, depending on orientation.
+     *
      * @param v Vehicle to check adjacencies.
      * @return Positive value associated with number of spaces to the right or below.
      */
@@ -255,6 +314,7 @@ public class Board {
     /**
      * Generates a key representing the state of the board. "X" represents an empty location and each number
      * represents the ID of the vehicle at that location. Goes from top leftmost location to bottom rightmost.
+     *
      * @return Returns the generated board state key.
      */
     String generateBoardKey() {
