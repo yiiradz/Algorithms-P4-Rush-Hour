@@ -43,14 +43,37 @@ public class RushHourGame {
             String poppedKey = poppedBoard.generateBoardKey();
 
             // For each vehicle that exists on the board
-            // CLONES THE CURRENT BOARD EACH TIME. ALL MODIFICATIONS SHOULD BE MADE TO "clonedBoard"!!
             for (int vehicleIndex = 0; vehicleIndex < numOfVehicles; vehicleIndex++) {
+                // The very first thing we do is clone the board. From here on we should only use clonedBoard.
                 Vehicle currVehicle = poppedBoard.vehicles[vehicleIndex];
                 String direction = currVehicle.direction;
-                int LU; // - Left/up (lower bound)
-                int DR; // + Right/down (upper bound)
-                Board clonedBoard = new Board(poppedBoard);
-
+                int LU = poppedBoard.getVehicleAdjacentLowerBound(currVehicle); // - Left/up (lower bound)
+                int DR = poppedBoard.getVehicleAdjacentUpperBound(currVehicle); // + Right/down (upper bound)
+                // CLONES THE CURRENT BOARD EACH TIME. ALL MODIFICATIONS SHOULD BE MADE TO "clonedBoard"!!
+                // Do horizontal work
+                if (currVehicle.direction.equals("h")) {
+                    // Make two loops, one for left/up and one for right/down where we clone the board and move
+                    for (int low = currVehicle.col; low >= low + LU; low--) {
+                        Board clonedBoard = new Board(poppedBoard);
+                        Vehicle clonedVehicle = clonedBoard.board[currVehicle.row][currVehicle.col];
+                    }
+                    for (int high = currVehicle.col; high < high + DR; high++) {
+                        Board clonedBoard = new Board(poppedBoard);
+                        Vehicle clonedVehicle = clonedBoard.board[currVehicle.row][currVehicle.col];
+                    }
+                }
+                // Do vertical work
+                if (currVehicle.direction.equals("v")) {
+                    // Make two loops, one for left/up and one for right/down where we clone the board and move
+                    for (int low = currVehicle.row; low >= low + LU; low--) {
+                        Board clonedBoard = new Board(poppedBoard);
+                        Vehicle clonedVehicle = clonedBoard.board[currVehicle.row][currVehicle.col];
+                    }
+                    for (int high = currVehicle.row; high < high + DR; high++) {
+                        Board clonedBoard = new Board(poppedBoard);
+                        Vehicle clonedVehicle = clonedBoard.board[currVehicle.row][currVehicle.col];
+                    }
+                }
             }
         }
     }
