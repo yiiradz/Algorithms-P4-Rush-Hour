@@ -31,10 +31,10 @@ public class main {
             Vehicle vehicle = new Vehicle(type, color, orientation, row, col, current_vehicle);
             vehicle.print();
             // Validate the vehicle, print, and insert
-            if(vehicle.isValid()) {
+            if (vehicle.isValid()) {
                 System.out.println("Vehicle is valid!");
-                 if (!game.activeBoard.insertVehicle(vehicle)) {
-                     System.out.println("Unable to insert vehicle onto the board!");
+                if (!game.poppedBoard.insertVehicle(vehicle)) {
+                    System.out.println("Unable to insert vehicle onto the board!");
                 }
             }
             System.out.println();
@@ -60,9 +60,9 @@ public class main {
             createGameFromFile(sc);
             // Else read in from a file
         } else {
-            String path = "/Users/yiradz/College/JUN_SEM1/GALGORITMS/Algorithms-P4-Rush-Hour/RushHour/input.txt";
-           // String path = "/Users/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
-            //String path = "/home/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
+            //String path = "/Users/yiradz/College/JUN_SEM1/GALGORITMS/Algorithms-P4-Rush-Hour/RushHour/input.txt";
+            //String path = "/Users/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
+            String path = "/home/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
             openFile(path);
         }
         // Print out the board after we fill it up and then start the game

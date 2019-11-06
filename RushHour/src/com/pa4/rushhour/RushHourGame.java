@@ -5,16 +5,17 @@ import java.util.HashMap;
 import java.util.Queue;
 
 public class RushHourGame {
-    Queue<Board> queue;
-    HashMap<String, String> hashMap;
-    Board activeBoard;
+    private Queue<Board> queue;
+    private HashMap<String, String> hashMap;
+    private int numOfVehicles;
+    public Board poppedBoard;
 
     /**
      * Initialize all of the game requirements
      */
     public RushHourGame() {
         // Initialize the board as a 6x6 2D array of vehicles
-        activeBoard = new Board();
+        poppedBoard = new Board();
         queue = new ArrayDeque<Board>();
         hashMap = new HashMap<String, String>(); // The strings will be a walkthrough of the vehicle ids
     }
@@ -24,113 +25,44 @@ public class RushHourGame {
     }
 
     public void start() {
-        // Enqueue the board we just created and add it to the map with a parent of null
-        queue.add(activeBoard);
-        String parentStr = activeBoard.generateBoardKey();
-        hashMap.put(parentStr, null);
+        // Begin by enqueueing the very first board
+        seedQueue();
         // While the queue is not empty and the game is not done
-        while (!queue.isEmpty() && !activeBoard.isGameDone()) {
-            // Remove the last board from the queue and identify it as the parent
-            // Generate a new board as the parent
-            Board parentBoard = queue.remove();
-            String parentKey = parentBoard.generateBoardKey();
-            // Check adjacency and then insert them into the hashmap.
-            // Cycle through all vehicles on the board and find their adjacent locations to enqueue.
-            if (activeBoard.vehicles != null) {
-                int numOfVehicles = activeBoard.vehicles.length;
-                for (int vehicleIndex = 0; vehicleIndex < numOfVehicles; vehicleIndex++) {
-                    Vehicle current = activeBoard.vehicles[vehicleIndex];
-                    // Now that we have a vehicle to check adjacent locations with, clone the board, move to an
-                    // adjacent location, enqueue it, add that board's key to the hashmap with this board as the parent.
-                    // Set the active board to now be the dequeued board
-                    activeBoard = new Board(parentBoard);
-                    // TODO: Inset check for adjacent locations here
-                    // current is a car
-                    if (current.type == "car"){
-                        // Cars are of length 2 so check all possible changes in current's dynamic direction and enqueue them
+        while (!queue.isEmpty() && !poppedBoard.isGameDone()) {
+            // Update the popped board
+            // ONLY UPDATES AFTER EVERY POSSIBLE MOVE HAS BEEN MADE!!
+            poppedBoard = queue.remove();
+            String poppedKey = poppedBoard.generateBoardKey();
 
-                        //Check if red car is at target location
-                        if (current.color == "red" && current.row == 4 && current.col == 2){
-                            activeBoard.isGameDone();
-                        }
-                        // If horizontal, check col spaces
-                        if (current.direction == "h"){
+            // For each vehicle that exists on the board
+            // CLONES THE CURRENT BOARD EACH TIME. ALL MODIFICATIONS SHOULD BE MADE TO "clonedBoard"!!
+            for (int vehicleIndex = 0; vehicleIndex < numOfVehicles; vehicleIndex++) {
+                Vehicle currVehicle = poppedBoard.vehicles[vehicleIndex];
+                String direction = currVehicle.direction;
+                int LU; // - Left/up (lower bound)
+                int DR; // + Right/down (upper bound)
+                Board clonedBoard = new Board(poppedBoard);
 
-                            // Check right
-                            if(activeBoard.isSpaceFree(current.row,current.col + 1)){
-                                activeBoard.insertCarAtPosition(current,current.row,current.col + 1);
-                                // TODO: enqueue to queue, clone board, change parent
-                            }
-
-                            // Check left
-                            if(activeBoard.isSpaceFree(current.row,current.col - 1)){
-                                activeBoard.insertCarAtPosition(current,current.row,current.col - 1);
-                            }
-
-                        }
-
-                        // if vertical, check row spaces
-                        else {
-
-                            // Check up
-                            if(activeBoard.isSpaceFree(current.row + 1,current.col)){
-                                activeBoard.insertCarAtPosition(current,current.row + 1,current.col);
-                            }
-
-                            // Check down
-                            if(activeBoard.isSpaceFree(current.row - 1,current.col)){
-                                activeBoard.insertCarAtPosition(current,current.row - 1,current.col);
-                            }
-
-                        }
-
-                    }
-                    // current is a truck
-                    else{
-                        // Trucks are of length 3 so check all possible changes in current's dynamic direction and enqueue them
-
-                        // If horizontal, check col spaces
-                        if (current.direction == "h"){
-// Check right
-                            if(activeBoard.isSpaceFree(current.row,current.col + 1)){
-                                activeBoard.insertTruckAtPosition(current,current.row,current.col + 1);
-                            }
-
-                            // Check left
-                            if(activeBoard.isSpaceFree(current.row,current.col - 1)){
-                                activeBoard.insertTruckAtPosition(current,current.row,current.col - 1);
-                            }
-
-                        }
-
-                        // if vertical, check row spaces
-                        else {
-
-                            // Check up
-                            if(activeBoard.isSpaceFree(current.row + 1,current.col)){
-                                activeBoard.insertTruckAtPosition(current,current.row + 1,current.col);
-                            }
-
-                            // Check down
-                            if(activeBoard.isSpaceFree(current.row - 1,current.col)){
-                                activeBoard.insertTruckAtPosition(current,current.row - 1,current.col);
-                            }
-                        }
-
-                    }
-                    // ...
-                    // Do our moves and then generate a key
-                    String activeKey = activeBoard.generateBoardKey();
-                }
             }
         }
+    }
+
+    /**
+     * Puts the first board that was read in from the file onto the queue and seeds the rest of the game
+     * based on the info we were provided.
+     */
+    void seedQueue() {
+        numOfVehicles = poppedBoard.vehicles.length;
+        queue.add(poppedBoard);
+        String poppedKey = poppedBoard.generateBoardKey();
+        hashMap.put(poppedKey, null);
     }
 
     /**
      * Prints out the current, active game board.
      */
     public void print() {
-        activeBoard.print();
+        poppedBoard.print();
     }
 
     /**

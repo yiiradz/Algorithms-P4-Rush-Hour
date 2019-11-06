@@ -21,7 +21,6 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO: Replace file with args[0]
         String file = "/Users/keeton/Google Drive/Cedarville/2018 Spring/Java/Project 5/project5_maze.i2";
         MazeParser parser;
         // Try to load in file and solve the maze.

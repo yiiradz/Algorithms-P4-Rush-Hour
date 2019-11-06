@@ -1,26 +1,30 @@
 package com.pa4.rushhour;
 
 public class Board {
-    public Vehicle[][] board;
-    public Vehicle[] vehicles;
+    Vehicle[][] board;
+    Vehicle[] vehicles;
 
-    public Board() {
+    Board() {
         board = new Vehicle[6][6];
     }
 
-    public Board(Board original) {
+    Board(Board original) {
         board = new Vehicle[6][6];
         // Do a deep copy of the board
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 6; j++) {
                 Vehicle orig = original.board[i][j];
                 if (orig != null) {
-                    Vehicle copy = new Vehicle(orig.type, orig.color, orig.direction, orig.row, orig.col, orig.id);
+                    Vehicle copy = new Vehicle(orig);
                     board[i][j] = copy;
                 } else {
                     board[i][j] = null;
                 }
             }
+        }
+        // Do a deep copy of the vehicles array
+        for (int i = 0; i < original.vehicles.length; i++) {
+            vehicles[i] = new Vehicle(original.vehicles[i]);
         }
     }
 
@@ -28,7 +32,7 @@ public class Board {
      * Prints out the current state of the game board with each location being indicated by the
      * first letter of the vehicle color
      */
-    public void print() {
+    void print() {
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 6; j++) {
                 Vehicle v = board[i][j];
@@ -53,11 +57,11 @@ public class Board {
      * @param col Column location of vehicle (topmost).
      * @return Returns true if the location is free.
      */
-    public boolean isSpaceFree(int row, int col) {
+    boolean isSpaceFree(int row, int col) {
         return (board[row][col] == null);
     }
 
-    public boolean isGameDone() {
+    boolean isGameDone() {
         // The red car should always be the first one.
         // We won't do any error checking for that though.
         if (vehicles != null) {
@@ -78,7 +82,7 @@ public class Board {
      * @param vehicle Vehicle to be inserted.
      * @return Returns true if the insertion occured.
      */
-    public boolean insertVehicle(Vehicle vehicle) {
+    boolean insertVehicle(Vehicle vehicle) {
         if (vehicle.type.equals("car")) {
             return insertCarAtPosition(vehicle, vehicle.row, vehicle.col);
         }
@@ -95,7 +99,7 @@ public class Board {
      * @param row Row location
      * @param col Column location
      */
-    public boolean insertCarAtPosition(Vehicle v, int row, int col) {
+    boolean insertCarAtPosition(Vehicle v, int row, int col) {
         if (!v.type.equals("car")) {
             System.out.println("Refusing to update truck as a car!");
             return false;
@@ -130,7 +134,7 @@ public class Board {
      * @param row Row location
      * @param col Column location
      */
-    public boolean insertTruckAtPosition(Vehicle v, int row, int col) {
+    boolean insertTruckAtPosition(Vehicle v, int row, int col) {
         // Coordinates given should be the uppermost location for vertical
         // Coordinates given should be the leftmost location for horizontal
         if (!v.type.equals("truck")) {
@@ -163,22 +167,48 @@ public class Board {
     }
 
     /**
+     * Gets the number of available spaces to the left or above, depending on orientation.
+     * @param v Vehicle to check adjacencies
+     * @return Negative value associated with number of spaces to the left or above.
+     */
+    int getVehicleAdjacentLowerBound(Vehicle v) {
+        int spaces = 0;
+        if (v.direction.equals("h")) {
+
+        }
+        if (v.direction.equals("v")) {
+
+        }
+        return spaces;
+    }
+
+    /**
+     * Gets the number of spaces to the right or below, depending on orientation.
+     * @param v Vehicle to check adjacencies.
+     * @return Positive value associated with number of spaces to the right or below.
+     */
+    int getVehicleAdjacentUpperBound(Vehicle v) {
+        int spaces = 0;
+        return spaces;
+    }
+
+    /**
      * Generates a key representing the state of the board. "X" represents an empty location and each number
      * represents the ID of the vehicle at that location. Goes from top leftmost location to bottom rightmost.
      * @return Returns the generated board state key.
      */
-    public String generateBoardKey() {
-        String key = "";
+    String generateBoardKey() {
+        StringBuilder key = new StringBuilder();
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 6; j++) {
                 Vehicle curr = board[i][j];
                 if (curr != null) {
-                    key += curr.id;
+                    key.append(curr.id);
                 } else {
-                    key += "X";
+                    key.append("X");
                 }
             }
         }
-        return key;
+        return key.toString();
     }
 }

@@ -17,6 +17,7 @@ public class Vehicle {
     public String direction = "";  // (h)orizontal or (v)ertical
     public int row = 0;
     public int col = 0;
+    public int size = 0;
     public int id = -1;
 
     /**
@@ -35,7 +36,22 @@ public class Vehicle {
         this.row = row;
         this.col = col;
         this.id = id;
+        // Set the size depending on type. Assumes validity.
+        if (type.equals("car")) {
+            size = 2;
+        }
+        else if (type.equals("truck")) {
+            size = 3;
+        }
         // Red car should always have an ID of 0.
+    }
+
+    /**
+     * Copy Constructor
+     * @param orig Original vehicle to copy
+     */
+    public Vehicle(Vehicle orig) {
+        this(orig.type, orig.color, orig.direction, orig.row, orig.col, orig.id);
     }
 
     /**
