@@ -47,6 +47,7 @@ public class main {
             createGameFromFile(sc);
         } catch (FileNotFoundException ex) {
             System.out.println(ex.getMessage());
+            System.exit(2);
         }
     }
 
@@ -60,8 +61,8 @@ public class main {
             // Else read in from a file
         } else {
             //String path = "/Users/yiradz/College/JUN_SEM1/GALGORITMS/RushHour/input.txt";
-            //String path = "/Users/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
-            String path = "/home/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
+            String path = "/Users/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
+            //String path = "/home/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
             openFile(path);
         }
         // Print out the board after we fill it up and then start the game

@@ -2,6 +2,7 @@ package com.pa4.rushhour;
 
 public class Board {
     public Vehicle[][] board;
+    public Vehicle[] vehicles;
 
     public Board() {
         board = new Vehicle[6][6];
@@ -13,8 +14,12 @@ public class Board {
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 6; j++) {
                 Vehicle orig = original.board[i][j];
-                Vehicle copy = new Vehicle(orig.type, orig.color, orig.direction, orig.row, orig.col, orig.id);
-                board[i][j] = copy;
+                if (orig != null) {
+                    Vehicle copy = new Vehicle(orig.type, orig.color, orig.direction, orig.row, orig.col, orig.id);
+                    board[i][j] = copy;
+                } else {
+                    board[i][j] = null;
+                }
             }
         }
     }
@@ -50,6 +55,18 @@ public class Board {
      */
     public boolean isSpaceFree(int row, int col) {
         return (board[row][col] == null);
+    }
+
+    public boolean isGameDone() {
+        // The red car should always be the first one.
+        // We won't do any error checking for that though.
+        Vehicle redCar = vehicles[0];
+        // If we're at position 4/5 then the next location has to be open
+        // and thus we've won the game.
+        if ((redCar.row == 4) && (redCar.col == 2)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -109,6 +126,8 @@ public class Board {
                 System.out.println("Cannot place car at location <" + row + "," + "col" + "> because it won't fit!");
             }
         }
+        // Insert the vehicle into the array
+        vehicles[vehicles.length] = v;
         return true;
     }
 
@@ -144,6 +163,7 @@ public class Board {
                 System.out.println("Cannot place truck at location <" + row + "," + "col" + "> because it won't fit!");
             }
         }
+        vehicles[vehicles.length] = v;
         return true;
     }
 

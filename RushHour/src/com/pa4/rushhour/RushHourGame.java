@@ -24,17 +24,31 @@ public class RushHourGame {
     }
 
     public void start() {
-        // Enqueue the board we just created
+        // Enqueue the board we just created and add it to the map with a parent of null
         queue.add(activeBoard);
-        // While the queue is not empty
-        while (!queue.isEmpty()) {
-            Board copy = new Board(activeBoard);
-            // Check adjacencies and then insert them into the hashmap.
-            // Generate a new board with the moved component, not overwritting the current one, then
-            // we need to generate the new board's string, then insert that as the key and the value is
-            // the current board (i.e. the parent board)
+        String parentStr = activeBoard.generateBoardKey();
+        hashMap.put(parentStr, null);
+        // While the queue is not empty and the game is not done
+        while (!queue.isEmpty() && !activeBoard.isGameDone()) {
+            // Remove the last board from the queue and identify it as the parent
+            // Generate a new board as the parent
+            Board parentBoard = queue.remove();
+            String parentKey = parentBoard.generateBoardKey();
+            // Check adjacency and then insert them into the hashmap.
+            // Cycle through all vehicles on the board and find their adjacent locations to enqueue.
+            int numOfVehicles = activeBoard.vehicles.length;
+            for (int vehicleIndex = 0; vehicleIndex < numOfVehicles; vehicleIndex++) {
+                Vehicle current = activeBoard.vehicles[vehicleIndex];
+                // Now that we have a vehicle to check adjacent locations with, clone the board, move to an
+                // adjacent location, enqueue it, add that board's key to the hashmap with this board as the parent.
+                // Set the active board to now be the dequeued board
+                activeBoard = new Board(parentBoard);
+                // TODO: Inset check for adjacent locations here
+                // ...
+                // Do our moves and then generate a key
+                String activeKey = activeBoard.generateBoardKey();
+            }
         }
-        System.out.println(activeBoard.generateBoardKey());
     }
 
     /**
@@ -42,5 +56,12 @@ public class RushHourGame {
      */
     public void print() {
         activeBoard.print();
+    }
+
+    /**
+     * Prints the solution sequence to prove we beat the game.
+     */
+    private void printSolution() {
+        // Print out the game solution
     }
 }
