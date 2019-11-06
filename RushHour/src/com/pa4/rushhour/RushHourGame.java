@@ -20,10 +20,18 @@ public class RushHourGame {
         hashMap = new HashMap<String, String>(); // The strings will be a walkthrough of the vehicle ids
     }
 
-    public boolean hasPathBeenSeen(String str) {
+    /**
+     * Checks if we've already seen a particular board layout.
+     * @param str Hashmap key to be inspected.
+     * @return Returns true if the board orientation has been seen before.
+     */
+    public boolean hasBoardBeenSeen(String str) {
         return (hashMap.containsKey(str));
     }
 
+    /**
+     * Starts the game solving process.
+     */
     public void start() {
         // Begin by enqueueing the very first board
         seedQueue();

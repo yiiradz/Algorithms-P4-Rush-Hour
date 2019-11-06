@@ -61,6 +61,10 @@ public class Board {
         return (board[row][col] == null);
     }
 
+    /**
+     * Checks if the red car is in the winning position.
+     * @return Returns true if the red car is right in front of the exit, and thus wins.
+     */
     boolean isGameDone() {
         // The red car should always be the first one.
         // We won't do any error checking for that though.
@@ -167,17 +171,45 @@ public class Board {
     }
 
     /**
+     * The following two functions for getting the number of free spaces are nearly identical. I know that if
+     * I were to dedicate more time to this I could come up with some elegant way of getting the values with as little
+     * code repeated as possible, but I don't feel like doing that for this project. Hope that's okay.
+     */
+
+    /**
      * Gets the number of available spaces to the left or above, depending on orientation.
      * @param v Vehicle to check adjacencies
      * @return Negative value associated with number of spaces to the left or above.
      */
     int getVehicleAdjacentLowerBound(Vehicle v) {
         int spaces = 0;
+        // If we're horizontal then we check left
         if (v.direction.equals("h")) {
-
+            int row = v.row;
+            // Start at the vehicle anchor and keep moving so long as we're on the board
+            for (int col = v.col; col > -1; col--) {
+                // If the space is free, decrement spaces because we're getting the lower bound
+                // If the space isn't free, just return because there's no point in continuing to look
+                if (isSpaceFree(row, col)) {
+                    spaces--;
+                } else {
+                    return spaces;
+                }
+            }
         }
+        // If we're vertical then we check up
         if (v.direction.equals("v")) {
-
+            int col = v.col;
+            // Start at the vehicle anchor and keep moving upwards (toward 0) so long as we're on the board
+            for (int row = v.row; row > -1; row--) {
+                // If the space is free, decrement spaces because we're getting the lower bound
+                // If the space isn't free, just return because there's no point in continuing to look
+                if (isSpaceFree(row, col)) {
+                    spaces--;
+                } else {
+                    return spaces;
+                }
+            }
         }
         return spaces;
     }
@@ -189,6 +221,34 @@ public class Board {
      */
     int getVehicleAdjacentUpperBound(Vehicle v) {
         int spaces = 0;
+        // If we're horizontal then we check left
+        if (v.direction.equals("h")) {
+            int row = v.row;
+            // Start at the vehicle anchor and keep moving so long as we're on the board
+            for (int col = v.col; col < board.length; col++) {
+                // If the space is free, decrement spaces because we're getting the lower bound
+                // If the space isn't free, just return because there's no point in continuing to look
+                if (isSpaceFree(row, col)) {
+                    spaces++;
+                } else {
+                    return spaces;
+                }
+            }
+        }
+        // If we're vertical then we check up
+        if (v.direction.equals("v")) {
+            int col = v.col;
+            // Start at the vehicle anchor and keep moving upwards (toward 0) so long as we're on the board
+            for (int row = v.row; row < board.length; row++) {
+                // If the space is free, decrement spaces because we're getting the lower bound
+                // If the space isn't free, just return because there's no point in continuing to look
+                if (isSpaceFree(row, col)) {
+                    spaces++;
+                } else {
+                    return spaces;
+                }
+            }
+        }
         return spaces;
     }
 
