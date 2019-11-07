@@ -1,15 +1,19 @@
 package com.pa4.rushhour;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Board {
+class Board {
     Vehicle[][] board;
-    Vehicle[] vehicles;
+    List<Vehicle> vehicles;
 
     Board() {
         board = new Vehicle[6][6];
+        vehicles = new ArrayList<>();
     }
 
     Board(Board original) {
         board = new Vehicle[6][6];
+        vehicles = new ArrayList<>();
         // Do a deep copy of the board
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 6; j++) {
@@ -23,8 +27,10 @@ public class Board {
             }
         }
         // Do a deep copy of the vehicles array
-        for (int i = 0; i < original.vehicles.length; i++) {
-            vehicles[i] = new Vehicle(original.vehicles[i]);
+        for (int i = 0; i < original.vehicles.size(); i++) {
+            Vehicle originalVehicle = original.vehicles.get(i);
+            Vehicle newVehicle = new Vehicle(originalVehicle);
+            vehicles.add(newVehicle);
         }
     }
 
@@ -58,7 +64,7 @@ public class Board {
      * @param col Column location of vehicle (topmost).
      * @return Returns true if the location is free.
      */
-    boolean isSpaceFree(int row, int col) {
+    private boolean isSpaceFree(int row, int col) {
         return (board[row][col] == null);
     }
 
@@ -71,13 +77,11 @@ public class Board {
         // The red car should always be the first one.
         // We won't do any error checking for that though.
         if (vehicles != null) {
-            Vehicle redCar = vehicles[0];
+            Vehicle redCar = vehicles.get(0);
 
             // If we're at position 4/5 then the next location has to be open
             // and thus we've won the game.
-            if ((redCar.row == 4) && (redCar.col == 2)) {
-                return true;
-            }
+            return (redCar.row == 4) && (redCar.col == 2);
         }
         return false;
     }
@@ -90,7 +94,7 @@ public class Board {
      */
     void moveVehicle(Vehicle v, int i) {
         // Horizontal orientation
-        if (v.direction == "h") {
+        if (v.direction.equals("h")) {
             // Take the vehicle, get it's size, remove it from the current board
             int vRow = v.row;
             int vCol = v.col;
@@ -101,8 +105,7 @@ public class Board {
             }
 
             // Now reinsert the car into the given parameters
-            int newCol = vCol + i;
-            v.col = newCol;
+            v.col = vCol + i;
 
             // Make a loop that reinserts the vehicle in all of the positions which match its size
             for (int iCol = v.col; iCol < v.col + v.size; iCol++) {
@@ -111,7 +114,7 @@ public class Board {
         }
 
         // Vertical orientation
-        if (v.direction == "v") {
+        if (v.direction.equals("v")) {
             // Take the vehicle, get it's size, remove it from the current board
             int vRow = v.row;
             int vCol = v.col;
@@ -122,17 +125,13 @@ public class Board {
             }
 
             // Now reinsert the car into the given parameters
-            int newRow = vRow + i;
-            v.row = newRow;
+            v.row = vRow + i;
 
             // Make a loop that reinserts the vehicle in all of the positions which match its size
             for (int iRow = v.col; iRow < v.row + v.size; iRow++) {
                 board[v.row][v.col] = v;
             }
-
         }
-
-
     }
 
     /**
@@ -159,7 +158,7 @@ public class Board {
      * @param row Row location
      * @param col Column location
      */
-    boolean insertCarAtPosition(Vehicle v, int row, int col) {
+    private boolean insertCarAtPosition(Vehicle v, int row, int col) {
         if (!v.type.equals("car")) {
             System.out.println("Refusing to update truck as a car!");
             return false;
@@ -183,7 +182,7 @@ public class Board {
         }
         // Insert the vehicle into the array
         if (vehicles != null) {
-            vehicles[vehicles.length] = v;
+            vehicles.add(v);
         }
         return true;
     }
@@ -195,7 +194,7 @@ public class Board {
      * @param row Row location
      * @param col Column location
      */
-    boolean insertTruckAtPosition(Vehicle v, int row, int col) {
+    private boolean insertTruckAtPosition(Vehicle v, int row, int col) {
         // Coordinates given should be the uppermost location for vertical
         // Coordinates given should be the leftmost location for horizontal
         if (!v.type.equals("truck")) {
@@ -222,15 +221,15 @@ public class Board {
             }
         }
         if (vehicles != null) {
-            vehicles[vehicles.length] = v;
+            vehicles.add(v);
         }
         return true;
     }
 
-    /**
-     * The following two functions for getting the number of free spaces are nearly identical. I know that if
-     * I were to dedicate more time to this I could come up with some elegant way of getting the values with as little
-     * code repeated as possible, but I don't feel like doing that for this project. Hope that's okay.
+    /*
+      The following two functions for getting the number of free spaces are nearly identical. I know that if
+      I were to dedicate more time to this I could come up with some elegant way of getting the values with as little
+      code repeated as possible, but I don't feel like doing that for this project. Hope that's okay.
      */
 
     /**
@@ -248,7 +247,8 @@ public class Board {
             for (int col = v.col; col > -1; col--) {
                 // If the space is free, decrement spaces because we're getting the lower bound
                 // If the space isn't free, just return because there's no point in continuing to look
-                if (isSpaceFree(row, col)) {
+                int rowAfterV = row + v.size;
+                if (isSpaceFree(rowAfterV, col)) {
                     spaces--;
                 } else {
                     return spaces;
@@ -262,7 +262,8 @@ public class Board {
             for (int row = v.row; row > -1; row--) {
                 // If the space is free, decrement spaces because we're getting the lower bound
                 // If the space isn't free, just return because there's no point in continuing to look
-                if (isSpaceFree(row, col)) {
+                int rowAfterV = row + v.size;
+                if (isSpaceFree(rowAfterV, col)) {
                     spaces--;
                 } else {
                     return spaces;
@@ -284,10 +285,12 @@ public class Board {
         if (v.direction.equals("h")) {
             int row = v.row;
             // Start at the vehicle anchor and keep moving so long as we're on the board
-            for (int col = v.col; col < board.length; col++) {
+            int max = board.length - v.size;
+            for (int col = v.col; col < max; col++) {
                 // If the space is free, decrement spaces because we're getting the lower bound
                 // If the space isn't free, just return because there's no point in continuing to look
-                if (isSpaceFree(row, col)) {
+                int colAfterV = col + v.size;
+                if (isSpaceFree(row, colAfterV)) {
                     spaces++;
                 } else {
                     return spaces;
@@ -298,10 +301,12 @@ public class Board {
         if (v.direction.equals("v")) {
             int col = v.col;
             // Start at the vehicle anchor and keep moving upwards (toward 0) so long as we're on the board
-            for (int row = v.row; row < board.length; row++) {
+            int max = board.length - v.size;
+            for (int row = v.row; row < max; row++) {
                 // If the space is free, decrement spaces because we're getting the lower bound
                 // If the space isn't free, just return because there's no point in continuing to look
-                if (isSpaceFree(row, col)) {
+                int colAfterV = col + v.size;
+                if (isSpaceFree(row, colAfterV)) {
                     spaces++;
                 } else {
                     return spaces;

@@ -9,16 +9,16 @@ package com.pa4.rushhour;
  *
  * @author yiradz
  */
-// TODO: Do we want to have a Car and Truck class that implements / extends Vehicle?
+
 public class Vehicle {
     // Declare vehicle variables
-    public String type = "";       // car or truck
-    public String color = "";      // red, blue, purple, etc.
-    public String direction = "";  // (h)orizontal or (v)ertical
-    public int row = 0;
-    public int col = 0;
-    public int size = 0;
-    public int id = -1;
+    String type;       // car or truck
+    String color;      // red, blue, purple, etc.
+    String direction;  // (h)orizontal or (v)ertical
+    int row;
+    int col;
+    int size;
+    int id;
 
     /**
      * Constructs a new vehicle for use in a board.
@@ -27,15 +27,15 @@ public class Vehicle {
      * @param d Direction of vehicle. Either v or h.
      * @param row Anchor row (leftmost / topmost)
      * @param col Anchor column (leftmost / topmost)
-     * @param id Vehicle identifier value
+     * @param vid Vehicle identifier value
      */
-    public Vehicle(String t, String c, String d, int row, int col, int id) {
+    public Vehicle(String t, String c, String d, int row, int col, int vid) {
         this.type = t;
         this.color = c;
         this.direction = d;
         this.row = row;
         this.col = col;
-        this.id = id;
+        this.id = vid;
         // Set the size depending on type. Assumes validity.
         if (type.equals("car")) {
             size = 2;
@@ -52,12 +52,13 @@ public class Vehicle {
      */
     public Vehicle(Vehicle orig) {
         this(orig.type, orig.color, orig.direction, orig.row, orig.col, orig.id);
+        this.size = orig.size;
     }
 
     /**
      * Prints out all of the vehicle information.
      */
-    public void print() {
+    void print() {
         System.out.println("Type: " + type);
         System.out.println("Color: " + color);
         System.out.println("Direction: " + direction);
@@ -67,10 +68,10 @@ public class Vehicle {
     }
 
     /**
-     * @brief Validates the values which define the current vehicle.
+     * Validates the values which define the current vehicle.
      * Note that we don't check color since that wouldn't really be useful.
      */
-    public boolean isValid() {
+    boolean isValid() {
         boolean isCar = (type.equals("car"));
         boolean isTruck = (type.equals("truck"));
         boolean isVertical = (direction.equals("v"));

@@ -62,7 +62,7 @@ public class main {
         } else {
             //String path = "/Users/yiradz/College/JUN_SEM1/GALGORITMS/Algorithms-P4-Rush-Hour/RushHour/input.txt";
             //String path = "/Users/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
-            String path = "/home/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
+            String path = "/home/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/stupid.txt";
             openFile(path);
         }
         // Print out the board after we fill it up and then start the game
