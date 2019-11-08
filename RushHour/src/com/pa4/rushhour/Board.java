@@ -68,10 +68,7 @@ class Board {
         // Do some bounds checking in case we're trying to check off the array
         // I know this means that something somewhere else is screwed up (probably?)
         // but we're desperate at this point since we can't seem to find this bug.
-        if (row < 0 || col < 0) {
-            return false;
-        }
-        if (row > 5 || col > 5) {
+        if (row < 0 || col < 0 || row > 5 || col > 5) {
             return false;
         }
         return (board[row][col] == null);
@@ -100,9 +97,8 @@ class Board {
      */
     int getVehicleAdjacentLowerBound(Vehicle v) {
         int spaces = 0;
-        int min = 0;    // the lowest valid value is 0. We can be equal to 0, but not lower.
-        // If we're horizontal then we check left
-        if (v.direction.equals("h")) {
+        int min = 0;
+        if (v.direction.equals("h")) { // Left
             int start = v.col - 1;
             for (int col = start; col >= min; col--) {
                 if (isSpaceFree(v.row, col)) {
@@ -112,8 +108,7 @@ class Board {
                 }
             }
         }
-        // If we're vertical then we check up
-        if (v.direction.equals("v")) {
+        if (v.direction.equals("v")) { // Up
             int start = v.row - 1;
             for (int row = start; row >= min; row--) {
                 if (isSpaceFree(row, v.col)) {
@@ -134,8 +129,8 @@ class Board {
      */
     int getVehicleAdjacentUpperBound(Vehicle v) {
         int spaces = 0;
-        if (v.direction.equals("h")) {  // Left
-            int max = board.length - v.size - 1; // Need the - 1 to convert from spaces to index
+        int max = board.length - 1;
+        if (v.direction.equals("h")) {  // Right
             int start = v.col + v.size;
             for (int col = start; col <= max; col++) {
                 if (isSpaceFree(v.row, col)) {
@@ -145,10 +140,12 @@ class Board {
                 }
             }
         }
-        if (v.direction.equals("v")) {  // Up
-            int max = board.length - v.size - 1; // Need the - 1 to convert from spaces to index
+        if (v.direction.equals("v")) {  // Down
             int start = v.row + v.size;
+            System.out.println("Start: " + start + " Max: " + max);
             for (int row = start; row <= max; row++) {
+                System.out.println("Row: " + row + " Max: " + max);
+                // the issue is that because we have our own car below the anchor we return not free.
                 if (isSpaceFree(row, v.col)) {
                     spaces++;
                 } else {
@@ -156,6 +153,7 @@ class Board {
                 }
             }
         }
+        System.out.println("Available spaces: " + spaces);
         return spaces;
     }
 
@@ -167,6 +165,7 @@ class Board {
      */
     void moveVehicle(Vehicle v, int i) {
         // Remove the vehicle from the board
+        // TODO: Investigate the issue here.
         removeVehicle(v);
         if (v.direction.equals("h")) {
             // Add `i` to the column (left/right) and reinsert
@@ -211,11 +210,11 @@ class Board {
     boolean insertVehicle(Vehicle vehicle, boolean shouldReplace) {
         if (vehicle.type.equals("car")) {
             return insertCarAtPosition(vehicle, vehicle.row, vehicle.col, shouldReplace);
-        } else if (vehicle.type.equals("truck")) {
-            return insertTruckAtPosition(vehicle, vehicle.row, vehicle.col, shouldReplace);
-        } else {
-            return false;
         }
+        if (vehicle.type.equals("truck")) {
+            return insertTruckAtPosition(vehicle, vehicle.row, vehicle.col, shouldReplace);
+        }
+        return false;
     }
 
     /**
@@ -231,20 +230,12 @@ class Board {
             return false;
         }
         if (v.direction.equals("v")) {
-            if (isSpaceFree(row, col) && isSpaceFree(row + 1, col)) {
-                board[row][col] = v;
-                board[row + 1][col] = v;
-            } else {
-                System.out.println("Cannot place " + v.color + " car vertically at location <" + row + "," + col + "> because it won't fit!");
-            }
+            board[row][col] = v;
+            board[row + 1][col] = v;
         }
         if (v.direction.equals("h")) {
-            if (isSpaceFree(row, col) && isSpaceFree(row, col + 1)) {
-                board[row][col] = v;
-                board[row][col + 1] = v;
-            } else {
-                System.out.println("Cannot place " + v.color + " car horizontally at location <" + row + "," + col + "> because it won't fit!");
-            }
+            board[row][col] = v;
+            board[row][col + 1] = v;
         }
         // Insert the vehicle into the array
         if (shouldReplace) {
@@ -269,22 +260,14 @@ class Board {
         }
         // Update the locations if they're available
         if (v.direction.equals("v")) {
-            if (isSpaceFree(row, col) && isSpaceFree(row + 1, col) && isSpaceFree(row + 2, col)) {
-                board[row][col] = v;
-                board[row + 1][col] = v;
-                board[row + 2][col] = v;
-            } else {
-                System.out.println("Cannot place " + v.color + " truck vertically at location <" + row + "," + col + "> because it won't fit!");
-            }
+            board[row][col] = v;
+            board[row + 1][col] = v;
+            board[row + 2][col] = v;
         }
         if (v.direction.equals("h")) {
-            if (isSpaceFree(row, col) && isSpaceFree(row, col + 1) && isSpaceFree(row, col + 2)) {
-                board[row][col] = v;
-                board[row][col + 1] = v;
-                board[row][col + 2] = v;
-            } else {
-                System.out.println("Cannot place " + v.color + " truck horizontally at location <" + row + "," + col + "> because it won't fit!");
-            }
+            board[row][col] = v;
+            board[row][col + 1] = v;
+            board[row][col + 2] = v;
         }
         // Insert the vehicle into the array
         if (shouldReplace) {
