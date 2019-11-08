@@ -13,11 +13,29 @@ import java.util.Scanner;
  *
  * @author Yayira and Keeton
  */
-public class main {
+public class MainClass {
     // Class variables
     private static RushHourGame game;
 
-    static void createGameFromFile(Scanner input) {
+    public static void main(String[] args) {
+        game = new RushHourGame();
+        boolean isGradel = false;
+        // If gradel mode, read in from STDIN
+        if (isGradel) {
+            Scanner sc = new Scanner(System.in);
+            createGameFromFile(sc);
+            // Else read in from a file
+        } else {
+            //String path = "/Users/yiradz/College/JUN_SEM1/GALGORITMS/Algorithms-P4-Rush-Hour/RushHour/input.txt";
+            //String path = "/Users/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
+            String path = "/home/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
+            openFile(path);
+        }
+        // Start the game
+        game.start();
+    }
+
+    private static void createGameFromFile(Scanner input) {
         // Read in the number of cars and trucks
         int total_vehicles = input.nextInt();
         // For each vehicle, read the next 5 lines and create a new Vehicle
@@ -33,7 +51,8 @@ public class main {
             // Validate the vehicle, print, and insert
             if (vehicle.isValid()) {
                 System.out.println("Vehicle is valid!");
-                if (!game.poppedBoard.insertVehicle(vehicle)) {
+                // Insert the vehicle with replace mode set to false since we're doing a first time insert.
+                if (!game.poppedBoard.insertVehicle(vehicle, false)) {
                     System.out.println("Unable to insert vehicle onto the board!");
                 }
             }
@@ -41,7 +60,7 @@ public class main {
         }
     }
 
-    static void openFile(String s) {
+    private static void openFile(String s) {
         try {
             Scanner sc = new Scanner(new File(s));
             createGameFromFile(sc);
@@ -49,24 +68,5 @@ public class main {
             System.out.println(ex.getMessage());
             System.exit(2);
         }
-    }
-
-    public static void main(String[] args) {
-        game = new RushHourGame();
-        boolean isGradel = false;
-        // If gradel mode, read in from STDIN
-        if (isGradel) {
-            Scanner sc = new Scanner(System.in);
-            createGameFromFile(sc);
-            // Else read in from a file
-        } else {
-            //String path = "/Users/yiradz/College/JUN_SEM1/GALGORITMS/Algorithms-P4-Rush-Hour/RushHour/input.txt";
-            //String path = "/Users/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
-            String path = "/home/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/stupid.txt";
-            openFile(path);
-        }
-        // Print out the board after we fill it up and then start the game
-        game.print();
-        game.start();
     }
 }
