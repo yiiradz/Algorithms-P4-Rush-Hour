@@ -93,45 +93,40 @@ class Board {
      * // NOTE: This function does not error check, it assumes that the space given can be used
      */
     void moveVehicle(Vehicle v, int i) {
+        // Remove the vehicle from the board
+        removeVehicle(v);
         // Horizontal orientation
         if (v.direction.equals("h")) {
-            // Take the vehicle, get it's size, remove it from the current board
-            int vRow = v.row;
-            int vCol = v.col;
-            int size = v.size;
-
-            for (int delCol = vCol; delCol < vCol + v.size; delCol++) {
-                // The row remains static in this case, and it's only the Column that changes
-                board[vRow][delCol] = null;
-            }
-
-            // Now reinsert the car into the given parameters
-            v.col = vCol + i;
-            // Make a loop that reinserts the vehicle in all of the positions which match its size
-            for (int iCol = v.col; iCol < v.col + size; iCol++) {
-                board[v.row][iCol] = v;
-            }
+            // Add `i` to the column (left/right) and reinsert
+            v.col = v.col + i;
+            insertVehicle(v);
         }
 
         // Vertical orientation
         if (v.direction.equals("v")) {
-            // Take the vehicle, get it's size, remove it from the current board
-            int vRow = v.row;
-            int vCol = v.col;
-            int size = v.size;
+            // Add `i` to the row (up/down) and reinsert
+            v.row = v.row + i;
+            insertVehicle(v);
+        }
+    }
 
-            for (int delRow = vRow; delRow < vRow + v.size; delRow++) {
+    boolean removeVehicle(Vehicle v) {
+        if (v.direction.equals("h")) {
+            int max = v.col + (v.size);
+            for (int delCol = v.col; delCol < max; delCol++) {
                 // The row remains static in this case, and it's only the Column that changes
-                board[delRow][vCol] = null;
-            }
-
-            // Now reinsert the car into the given parameters
-            v.row = vRow + i;
-            // Make a loop that reinserts the vehicle in all of the positions which match its size
-            for (int iRow = v.col; iRow < v.row + v.size; iRow++) {
-                board[iRow][v.col] = v;
+                board[v.row][delCol] = null;
             }
         }
+        if (v.direction.equals("v")) {
+            int max = v.row + (v.size - 1);
+            for (int delRow = v.row; delRow < max; delRow++) {
+                // The row remains static in this case, and it's only the Column that changes
+                board[delRow][v.col] = null;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -169,7 +164,7 @@ class Board {
                 board[row][col] = v;
                 board[row + 1][col] = v;
             } else {
-                System.out.println("Cannot place car at location <" + row + "," + "col" + "> because it won't fit!");
+                System.out.println("Cannot place car at location <" + row + "," + col + "> because it won't fit!");
             }
         }
         if (v.direction.equals("h")) {
@@ -177,7 +172,7 @@ class Board {
                 board[row][col] = v;
                 board[row][col + 1] = v;
             } else {
-                System.out.println("Cannot place car at location <" + row + "," + "col" + "> because it won't fit!");
+                System.out.println("Cannot place car at location <" + row + "," + col + "> because it won't fit!");
             }
         }
         // Insert the vehicle into the array
