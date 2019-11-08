@@ -51,6 +51,9 @@ class RushHourGame {
                 int LU = poppedBoard.getVehicleAdjacentLowerBound(currVehicle); // - Left/up (lower bound)
                 int RD = poppedBoard.getVehicleAdjacentUpperBound(currVehicle); // + Right/down (upper bound)
                 // CLONES THE CURRENT BOARD EACH TIME. ALL MODIFICATIONS SHOULD BE MADE TO "clonedBoard"!!
+                System.out.println("Popped Board: ");
+                poppedBoard.print();
+
                 // Do horizontal work
                 if (direction.equals("h")) {
                     if (LU != 0) {
@@ -60,6 +63,10 @@ class RushHourGame {
                             Vehicle clonedVehicle = clonedBoard.board[currVehicle.row][currVehicle.col];
                             clonedBoard.moveVehicle(clonedVehicle, low);
                             String cloneKey = clonedBoard.generateBoardKey();
+
+                            System.out.println("Cloned board with new move: ");
+                            clonedBoard.print();
+
                             // If the hashmap hasn't seen this board before, then add the cloned board as the key
                             // and the popped board as the parent
                             if (isBoardNew(cloneKey)) {
@@ -77,6 +84,10 @@ class RushHourGame {
                             Vehicle clonedVehicle = clonedBoard.board[currVehicle.row][currVehicle.col];
                             clonedBoard.moveVehicle(clonedVehicle, high);
                             String cloneKey = clonedBoard.generateBoardKey();
+
+                            System.out.println("Cloned board with new move: ");
+                            clonedBoard.print();
+
                             // If the hashmap hasn't seen this board before, then add the cloned board as the key
                             // and the popped board as the parent
                             if (isBoardNew(cloneKey)) {
@@ -98,6 +109,10 @@ class RushHourGame {
                             Vehicle clonedVehicle = clonedBoard.board[currVehicle.row][currVehicle.col];
                             clonedBoard.moveVehicle(clonedVehicle, low);
                             String cloneKey = clonedBoard.generateBoardKey();
+
+                            System.out.println("Cloned board with new move: ");
+                            clonedBoard.print();
+
                             // If the hashmap hasn't seen this board before, then add the cloned board as the key
                             // and the popped board as the parent
                             if (isBoardNew(cloneKey)) {
@@ -116,6 +131,10 @@ class RushHourGame {
                             Vehicle clonedVehicle = clonedBoard.board[currVehicle.row][currVehicle.col];
                             clonedBoard.moveVehicle(clonedVehicle, high);
                             String cloneKey = clonedBoard.generateBoardKey();
+
+                            System.out.println("Cloned board with new move: ");
+                            clonedBoard.print();
+
                             // If the hashmap hasn't seen this board before, then add the cloned board as the key
                             // and the popped board as the parent
                             if (isBoardNew(cloneKey)) {

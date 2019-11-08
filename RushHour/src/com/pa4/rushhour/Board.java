@@ -98,6 +98,7 @@ class Board {
             // Take the vehicle, get it's size, remove it from the current board
             int vRow = v.row;
             int vCol = v.col;
+            int size = v.size;
 
             for (int delCol = vCol; delCol < vCol + v.size; delCol++) {
                 // The row remains static in this case, and it's only the Column that changes
@@ -106,10 +107,9 @@ class Board {
 
             // Now reinsert the car into the given parameters
             v.col = vCol + i;
-
             // Make a loop that reinserts the vehicle in all of the positions which match its size
-            for (int iCol = v.col; iCol < v.col + v.size; iCol++) {
-                board[v.row][v.col] = v;
+            for (int iCol = v.col; iCol < v.col + size; iCol++) {
+                board[v.row][iCol] = v;
             }
         }
 
@@ -118,6 +118,7 @@ class Board {
             // Take the vehicle, get it's size, remove it from the current board
             int vRow = v.row;
             int vCol = v.col;
+            int size = v.size;
 
             for (int delRow = vRow; delRow < vRow + v.size; delRow++) {
                 // The row remains static in this case, and it's only the Column that changes
@@ -126,10 +127,9 @@ class Board {
 
             // Now reinsert the car into the given parameters
             v.row = vRow + i;
-
             // Make a loop that reinserts the vehicle in all of the positions which match its size
             for (int iRow = v.col; iRow < v.row + v.size; iRow++) {
-                board[v.row][v.col] = v;
+                board[iRow][v.col] = v;
             }
         }
     }
@@ -243,12 +243,11 @@ class Board {
         // If we're horizontal then we check left
         if (v.direction.equals("h")) {
             int row = v.row;
-            // Start at the vehicle anchor and keep moving so long as we're on the board
-            for (int col = v.col; col > -1; col--) {
+            // Start at the space before the vehicle anchor and keep going left
+            for (int col = v.col - 1; col > -1; col--) {
                 // If the space is free, decrement spaces because we're getting the lower bound
                 // If the space isn't free, just return because there's no point in continuing to look
-                int rowAfterV = row + v.size;
-                if (isSpaceFree(rowAfterV, col)) {
+                if (isSpaceFree(row, col)) {
                     spaces--;
                 } else {
                     return spaces;
@@ -256,6 +255,7 @@ class Board {
             }
         }
         // If we're vertical then we check up
+        // TODO: Need to test this section of code
         if (v.direction.equals("v")) {
             int col = v.col;
             // Start at the vehicle anchor and keep moving upwards (toward 0) so long as we're on the board
