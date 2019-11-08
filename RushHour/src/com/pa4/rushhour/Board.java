@@ -93,6 +93,73 @@ class Board {
     }
 
     /**
+     * Gets the number of available spaces to the left or above, depending on orientation.
+     *
+     * @param v Vehicle to check adjacencies
+     * @return Negative value associated with number of spaces to the left or above.
+     */
+    int getVehicleAdjacentLowerBound(Vehicle v) {
+        int spaces = 0;
+        int min = 0;    // the lowest valid value is 0. We can be equal to 0, but not lower.
+        // If we're horizontal then we check left
+        if (v.direction.equals("h")) {
+            int start = v.col - 1;
+            for (int col = start; col >= min; col--) {
+                if (isSpaceFree(v.row, col)) {
+                    spaces--;
+                } else {
+                    return spaces;
+                }
+            }
+        }
+        // If we're vertical then we check up
+        if (v.direction.equals("v")) {
+            int start = v.row - 1;
+            for (int row = start; row >= min; row--) {
+                if (isSpaceFree(row, v.col)) {
+                    spaces--;
+                } else {
+                    return spaces;
+                }
+            }
+        }
+        return spaces;
+    }
+
+    /**
+     * Gets the number of spaces to the right or below, depending on orientation.
+     *
+     * @param v Vehicle to check adjacencies.
+     * @return Positive value associated with number of spaces to the right or below.
+     */
+    int getVehicleAdjacentUpperBound(Vehicle v) {
+        int spaces = 0;
+        if (v.direction.equals("h")) {  // Left
+            int max = board.length - v.size - 1; // Need the - 1 to convert from spaces to index
+            int start = v.col + v.size;
+            for (int col = start; col <= max; col++) {
+                if (isSpaceFree(v.row, col)) {
+                    spaces++;
+                } else {
+                    return spaces;
+                }
+            }
+        }
+        if (v.direction.equals("v")) {  // Up
+            int max = board.length - v.size - 1; // Need the - 1 to convert from spaces to index
+            int start = v.row + v.size;
+            for (int row = start; row <= max; row++) {
+                if (isSpaceFree(row, v.col)) {
+                    spaces++;
+                } else {
+                    return spaces;
+                }
+            }
+        }
+        return spaces;
+    }
+
+    /**
      * Takes in positives and negatives integers and moves vehicle according to parameters
      * Finds the vehicle's anchor, removes the car from the board and reinserts it into the board
      * check orientation if h, add i to the col; if v, add i to the row
@@ -101,15 +168,12 @@ class Board {
     void moveVehicle(Vehicle v, int i) {
         // Remove the vehicle from the board
         removeVehicle(v);
-        // Horizontal orientation
         if (v.direction.equals("h")) {
             // Add `i` to the column (left/right) and reinsert
             v.col = v.col + i;
             // Insert the vehicle with replace mode enabled
             insertVehicle(v, true);
         }
-
-        // Vertical orientation
         if (v.direction.equals("v")) {
             // Add `i` to the row (up/down) and reinsert
             v.row = v.row + i;
@@ -120,15 +184,17 @@ class Board {
 
     private void removeVehicle(Vehicle v) {
         if (v.direction.equals("h")) {
-            int max = v.col + (v.size);
-            for (int delCol = v.col; delCol < max; delCol++) {
+            int min = v.col;
+            int max = v.col + (v.size - 1);
+            for (int delCol = min; delCol <= max; delCol++) {
                 // The row remains static in this case, and it's only the Column that changes
                 board[v.row][delCol] = null;
             }
         }
         if (v.direction.equals("v")) {
+            int min = v.row;
             int max = v.row + (v.size - 1);
-            for (int delRow = v.row; delRow < max; delRow++) {
+            for (int delRow = min; delRow <= max; delRow++) {
                 // The row remains static in this case, and it's only the Column that changes
                 board[delRow][v.col] = null;
             }
@@ -164,7 +230,6 @@ class Board {
             System.out.println("Refusing to update truck as a car!");
             return false;
         }
-        // Update the locations if they're available
         if (v.direction.equals("v")) {
             if (isSpaceFree(row, col) && isSpaceFree(row + 1, col)) {
                 board[row][col] = v;
@@ -198,8 +263,6 @@ class Board {
      * @param col Column location
      */
     private boolean insertTruckAtPosition(Vehicle v, int row, int col, boolean shouldReplace) {
-        // Coordinates given should be the uppermost location for vertical
-        // Coordinates given should be the leftmost location for horizontal
         if (!v.type.equals("truck")) {
             System.out.println("Refusing to update car as a truck!");
             return false;
@@ -230,98 +293,6 @@ class Board {
             vehicles.add(v);
         }
         return true;
-    }
-
-    /*
-      The following two functions for getting the number of free spaces are nearly identical. I know that if
-      I were to dedicate more time to this I could come up with some elegant way of getting the values with as little
-      code repeated as possible, but I don't feel like doing that for this project. Hope that's okay.
-     */
-
-    /**
-     * Gets the number of available spaces to the left or above, depending on orientation.
-     *
-     * @param v Vehicle to check adjacencies
-     * @return Negative value associated with number of spaces to the left or above.
-     */
-    int getVehicleAdjacentLowerBound(Vehicle v) {
-        int spaces = 0;
-        // If we're horizontal then we check left
-        if (v.direction.equals("h")) {
-            int row = v.row;
-            // Start at the space before the vehicle anchor and keep going left
-            for (int col = v.col - 1; col > -1; col--) {
-                // If the space is free, decrement spaces because we're getting the lower bound
-                // If the space isn't free, just return because there's no point in continuing to look
-                if (isSpaceFree(row, col)) {
-                    spaces--;
-                } else {
-                    return spaces;
-                }
-            }
-        }
-        // If we're vertical then we check up
-        // TODO: Need to test this section of code
-        if (v.direction.equals("v")) {
-            int col = v.col;
-            // Start at the vehicle anchor and keep moving upwards (toward 0) so long as we're on the board
-            for (int row = v.row; row > -1; row--) {
-                // If the space is free, decrement spaces because we're getting the lower bound
-                // If the space isn't free, just return because there's no point in continuing to look
-                int rowAfterV = row + v.size;
-                if (isSpaceFree(rowAfterV, col)) {
-                    spaces--;
-                } else {
-                    return spaces;
-                }
-            }
-        }
-        return spaces;
-    }
-
-    /**
-     * Gets the number of spaces to the right or below, depending on orientation.
-     *
-     * @param v Vehicle to check adjacencies.
-     * @return Positive value associated with number of spaces to the right or below.
-     */
-    int getVehicleAdjacentUpperBound(Vehicle v) {
-        int spaces = 0;
-        // If we're horizontal then we check left
-        if (v.direction.equals("h")) {
-            int row = v.row;
-            // Start at the vehicle anchor and keep moving so long as we're on the board
-            // Include the - 1 to convert to indexes instead of number of spaces
-            int max = board.length - v.size;
-            for (int col = v.col; col <= max; col++) {
-                // If the space is free, increment spaces because we're getting the upper bound
-                // If the space isn't free, just return because there's no point in continuing to look
-                // Subtract 1 to get from number of spaces to number of additional indexes
-                int colAfterV = col + (v.size - 1);
-                if (isSpaceFree(row, colAfterV)) {
-                    spaces++;
-                } else {
-                    return spaces;
-                }
-            }
-        }
-        // If we're vertical then we check up
-        if (v.direction.equals("v")) {
-            int col = v.col;
-            // Start at the vehicle anchor and keep moving upwards (toward 0) so long as we're on the board
-            int max = board.length - v.size;
-            for (int row = v.row; row < max; row++) {
-                // If the space is free, decrement spaces because we're getting the lower bound
-                // If the space isn't free, just return because there's no point in continuing to look
-                int colAfterV = col + v.size;
-                if (isSpaceFree(row, colAfterV)) {
-                    spaces++;
-                } else {
-                    return spaces;
-                }
-            }
-        }
-        return spaces;
     }
 
     /**
