@@ -110,7 +110,7 @@ class Board {
         }
     }
 
-    boolean removeVehicle(Vehicle v) {
+    private void removeVehicle(Vehicle v) {
         if (v.direction.equals("h")) {
             int max = v.col + (v.size);
             for (int delCol = v.col; delCol < max; delCol++) {
@@ -125,8 +125,6 @@ class Board {
                 board[delRow][v.col] = null;
             }
         }
-
-        return false;
     }
 
     /**
