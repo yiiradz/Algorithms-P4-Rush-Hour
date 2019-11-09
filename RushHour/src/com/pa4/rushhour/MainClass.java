@@ -26,8 +26,6 @@ public class MainClass {
             createGameFromFile(sc);
             // Else read in from a file
         } else {
-            //String path = "/Users/yiradz/College/JUN_SEM1/GALGORITMS/Algorithms-P4-Rush-Hour/RushHour/input.txt";
-            //String path = "/Users/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
             String path = "/home/keeton/Documents/Algorithms-P4-Rush-Hour/RushHour/input.txt";
             openFile(path);
         }
@@ -47,16 +45,13 @@ public class MainClass {
             int row = input.nextInt() - 1; // Convert to index
             int col = input.nextInt() - 1; // Convert to index
             Vehicle vehicle = new Vehicle(type, color, orientation, row, col, current_vehicle);
-            vehicle.print();
             // Validate the vehicle, print, and insert
             if (vehicle.isValid()) {
-                System.out.println("Vehicle is valid!");
                 // Insert the vehicle with replace mode set to false since we're doing a first time insert.
                 if (!game.poppedBoard.insertVehicle(vehicle, false)) {
                     System.out.println("Unable to insert vehicle onto the board!");
                 }
             }
-            System.out.println();
         }
     }
 

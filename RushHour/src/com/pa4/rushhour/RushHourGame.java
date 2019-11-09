@@ -8,8 +8,8 @@ class RushHourGame {
     private Queue<Board> queue;
     private HashMap<String, String> hashMap;
     private int numOfVehicles;
+    private String poppedKey;
     Board poppedBoard;
-    String poppedKey;
 
     /**
      * Initialize all of the game requirements
@@ -46,12 +46,6 @@ class RushHourGame {
                 printSolution();
                 return;
             }
-            // Print out debugging information
-            System.out.println("Popped key: " + poppedKey);
-            System.out.println("Popped Board: ");
-            poppedBoard.print();
-            System.out.println();
-
             // For each vehicle that exists on the board
             for (int vehicleIndex = 0; vehicleIndex < numOfVehicles; vehicleIndex++) {
                 // The very first thing we do is clone the board. From here on we should only use clonedBoard.
@@ -71,7 +65,6 @@ class RushHourGame {
                 }
             }
             // Done with the current item. Jump back up to the top to get the next one.
-            System.out.println("\nPopping the next item in the queue.");
         }
         // We're either out of items in the queue or we found an answer.
         System.out.println("Queue is empty and we didn't find an answer. :(");
@@ -88,72 +81,89 @@ class RushHourGame {
         hashMap.put(poppedKey, "ORIGIN");
     }
 
+    /**
+     * Moves a vehicle to the left for each space of LU
+     * @param currVehicle Vehicle to be moved
+     * @param LU Number of left spaces
+     */
     private void horizontalLeft(Vehicle currVehicle, int LU) {
         // We're dealing with negative values, so we need to step up from negative to 0.
         for (int low = LU; low < 0; low++) {
             Board clonedBoard = new Board(poppedBoard);
             Vehicle clonedVehicle = clonedBoard.board[currVehicle.row][currVehicle.col];
             clonedBoard.moveVehicle(clonedVehicle, low);
-            String cloneKey = clonedBoard.generateBoardKey();
             // Check if the board with the move is new and insert if necessary
-            insertClonedBoardIfNew(clonedBoard, cloneKey);
+            insertClonedBoardIfNew(clonedBoard);
         }
     }
 
+    /**
+     * Moves a vehicle to the right for each space of RD
+     * @param currVehicle Vehicle to be moved
+     * @param RD Number of right spaces
+     */
     private void horizontalRight(Vehicle currVehicle, int RD) {
         // We're dealing with positive values here, so we need to step down from positive to 0
         for (int spaces = RD; spaces > 0; spaces--) {
             Board clonedBoard = new Board(poppedBoard);
             Vehicle clonedVehicle = clonedBoard.board[currVehicle.row][currVehicle.col];
             clonedBoard.moveVehicle(clonedVehicle, spaces);
-            String cloneKey = clonedBoard.generateBoardKey();
             // Check if the board with the move is new and insert if necessary
-            insertClonedBoardIfNew(clonedBoard, cloneKey);
+            insertClonedBoardIfNew(clonedBoard);
         }
     }
 
+    /**
+     * Moves a vehicle upwards for each space of LU
+     * @param currVehicle Vehicle to be moved
+     * @param LU Number of upward spaces
+     */
     private void verticalUp(Vehicle currVehicle, int LU) {
         // We're dealing with negative values, so we need to step up from negative to 0.
         for (int low = LU; low < 0; low++) {
             Board clonedBoard = new Board(poppedBoard);
             Vehicle clonedVehicle = clonedBoard.board[currVehicle.row][currVehicle.col];
             clonedBoard.moveVehicle(clonedVehicle, low);
-            String cloneKey = clonedBoard.generateBoardKey();
             // Check if the board with the move is new and insert if necessary
-            insertClonedBoardIfNew(clonedBoard, cloneKey);
+            insertClonedBoardIfNew(clonedBoard);
         }
     }
 
+    /**
+     * Moves a vehicle downwards for each space of LU
+     * @param currVehicle Vehicle to be moved
+     * @param RD Number of downward spaces
+     */
     private void verticalDown(Vehicle currVehicle, int RD) {
         // We're dealing with positive values here, so we need to step down from positive to 0
         for (int high = RD; high > 0; high--) {
             Board clonedBoard = new Board(poppedBoard);
             Vehicle clonedVehicle = clonedBoard.board[currVehicle.row][currVehicle.col];
             clonedBoard.moveVehicle(clonedVehicle, high);
-            String cloneKey = clonedBoard.generateBoardKey();
             // Check if the board with the move is new and insert if necessary
-            insertClonedBoardIfNew(clonedBoard, cloneKey);
-        }
-    }
-
-    private void insertClonedBoardIfNew(Board clonedBoard, String cloneKey) {
-        // If the hashmap hasn't seen this board before, then add the cloned board as the key
-        // and the popped board as the parent
-        if (isBoardNew(cloneKey)) {
-            System.out.println("Inserting new board " + cloneKey);// + " with parent " + poppedKey);
-            hashMap.put(cloneKey, poppedKey);
-            queue.add(clonedBoard);
-        } else {
-            System.out.println("Board " + cloneKey + " has already been seen.");
+            insertClonedBoardIfNew(clonedBoard);
         }
     }
 
     /**
-     *
+     * Inserts the cloned board (based on popped board) into the queue and hashmap if it hasn't been seen before.
+     * @param clonedBoard The cloned board to be inserted.
+     */
+    private void insertClonedBoardIfNew(Board clonedBoard) {
+        // If the hashmap hasn't seen this board before, then add the cloned board as the key
+        // and the popped board as the parent
+        String cloneKey = clonedBoard.generateBoardKey();
+        if (isBoardNew(cloneKey)) {
+            hashMap.put(cloneKey, poppedKey);
+            queue.add(clonedBoard);
+        }
+    }
+
+    /**
+     * Prints out the final solution by printing the current board and all of its parent keys.
      */
     private void printSolution() {
         // Print out the game solution
-        System.out.println("Solution:");
         int counter = 0;
         // Then start printing the boards before this one.
         String key = hashMap.get(poppedKey);

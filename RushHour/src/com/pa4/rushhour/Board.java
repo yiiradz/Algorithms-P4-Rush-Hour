@@ -6,11 +6,18 @@ class Board {
     Vehicle[][] board;
     List<Vehicle> vehicles;
 
+    /**
+     * Constructs a new board
+     */
     Board() {
         board = new Vehicle[6][6];
         vehicles = new ArrayList<>();
     }
 
+    /**
+     * Board copy constructor
+     * @param original Board to be copied
+     */
     Board(Board original) {
         board = new Vehicle[6][6];
         vehicles = new ArrayList<>();
@@ -83,9 +90,6 @@ class Board {
         // The red car should always be the first one.
         // We won't do any error checking for that though.
         Vehicle redCar = vehicles.get(0);
-        // If we're at position 4/5 then the next location has to be open
-        // and thus we've won the game.
-        System.out.println("Checking " + redCar.color + " position: <" + redCar.row + "," + redCar.col + ">");
         return (redCar.col == 4) && (redCar.row == 2);
     }
 
@@ -142,9 +146,7 @@ class Board {
         }
         if (v.direction.equals("v")) {  // Down
             int start = v.row + v.size;
-            System.out.println("Start: " + start + " Max: " + max);
             for (int row = start; row <= max; row++) {
-                System.out.println("Row: " + row + " Max: " + max);
                 // the issue is that because we have our own car below the anchor we return not free.
                 if (isSpaceFree(row, v.col)) {
                     spaces++;
@@ -153,7 +155,6 @@ class Board {
                 }
             }
         }
-        System.out.println("Available spaces: " + spaces);
         return spaces;
     }
 
@@ -161,11 +162,11 @@ class Board {
      * Takes in positives and negatives integers and moves vehicle according to parameters
      * Finds the vehicle's anchor, removes the car from the board and reinserts it into the board
      * check orientation if h, add i to the col; if v, add i to the row
-     * NOTE: This function does not error check, it assumes that the space given can be used
+     * @param v Vehicle to be moved.
+     * @param i Value of spaces to be moved.
      */
     void moveVehicle(Vehicle v, int i) {
         // Remove the vehicle from the board
-        // TODO: Investigate the issue here.
         removeVehicle(v);
         if (v.direction.equals("h")) {
             // Add `i` to the column (left/right) and reinsert
@@ -181,6 +182,10 @@ class Board {
         }
     }
 
+    /**
+     * Removes a vehicle from the board, but not from the vehicle array.
+     * @param v Vehicle to be removed from the board.
+     */
     private void removeVehicle(Vehicle v) {
         if (v.direction.equals("h")) {
             int min = v.col;
