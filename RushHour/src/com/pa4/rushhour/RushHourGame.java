@@ -155,14 +155,11 @@ class RushHourGame {
         // Print out the game solution
         System.out.println("Solution:");
         int counter = 0;
-        // Print the board we're working with now
-        System.out.println(poppedBoard.generateBoardKey());
         // Then start printing the boards before this one.
-        String key = poppedBoard.generateBoardKey();
+        String key = hashMap.get(poppedKey);
         while (!key.equals("ORIGIN")) {
-            String parent = hashMap.get(key);
-            System.out.println(parent);
-            key = parent;
+            System.out.println(key);
+            key = hashMap.get(key);
             counter++;
         }
         // Print out the number of moves
