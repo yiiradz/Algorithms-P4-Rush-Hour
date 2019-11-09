@@ -89,9 +89,8 @@ class RushHourGame {
     }
 
     private void horizontalLeft(Vehicle currVehicle, int LU) {
-        // Make two loops, one for left/up and one for right/down where we clone the board and move
-        int min = currVehicle.col + LU;
-        for (int low = currVehicle.col; low >= min; low--) {
+        // We're dealing with negative values, so we need to step up from negative to 0.
+        for (int low = LU; low < 0; low++) {
             Board clonedBoard = new Board(poppedBoard);
             Vehicle clonedVehicle = clonedBoard.board[currVehicle.row][currVehicle.col];
             clonedBoard.moveVehicle(clonedVehicle, low);
@@ -102,11 +101,11 @@ class RushHourGame {
     }
 
     private void horizontalRight(Vehicle currVehicle, int RD) {
-        int max = currVehicle.col + RD;
-        for (int high = currVehicle.col; high < max; high++) {
+        // We're dealing with positive values here, so we need to step down from positive to 0
+        for (int spaces = RD; spaces > 0; spaces--) {
             Board clonedBoard = new Board(poppedBoard);
             Vehicle clonedVehicle = clonedBoard.board[currVehicle.row][currVehicle.col];
-            clonedBoard.moveVehicle(clonedVehicle, high);
+            clonedBoard.moveVehicle(clonedVehicle, spaces);
             String cloneKey = clonedBoard.generateBoardKey();
             // Check if the board with the move is new and insert if necessary
             insertClonedBoardIfNew(clonedBoard, cloneKey);
@@ -114,9 +113,8 @@ class RushHourGame {
     }
 
     private void verticalUp(Vehicle currVehicle, int LU) {
-        // Make two loops, one for left/up and one for right/down where we clone the board and move
-        int min = currVehicle.row + LU;
-        for (int low = currVehicle.row; low > min; low--) {
+        // We're dealing with negative values, so we need to step up from negative to 0.
+        for (int low = LU; low < 0; low++) {
             Board clonedBoard = new Board(poppedBoard);
             Vehicle clonedVehicle = clonedBoard.board[currVehicle.row][currVehicle.col];
             clonedBoard.moveVehicle(clonedVehicle, low);
@@ -127,8 +125,8 @@ class RushHourGame {
     }
 
     private void verticalDown(Vehicle currVehicle, int RD) {
-        int max = currVehicle.row + RD;
-        for (int high = currVehicle.row; high < max; high++) {
+        // We're dealing with positive values here, so we need to step down from positive to 0
+        for (int high = RD; high > 0; high--) {
             Board clonedBoard = new Board(poppedBoard);
             Vehicle clonedVehicle = clonedBoard.board[currVehicle.row][currVehicle.col];
             clonedBoard.moveVehicle(clonedVehicle, high);

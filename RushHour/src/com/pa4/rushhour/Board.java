@@ -225,10 +225,6 @@ class Board {
      * @param col Column location
      */
     private boolean insertCarAtPosition(Vehicle v, int row, int col, boolean shouldReplace) {
-        if (!v.type.equals("car")) {
-            System.out.println("Refusing to update truck as a car!");
-            return false;
-        }
         if (v.direction.equals("v")) {
             board[row][col] = v;
             board[row + 1][col] = v;
@@ -254,11 +250,6 @@ class Board {
      * @param col Column location
      */
     private boolean insertTruckAtPosition(Vehicle v, int row, int col, boolean shouldReplace) {
-        if (!v.type.equals("truck")) {
-            System.out.println("Refusing to update car as a truck!");
-            return false;
-        }
-        // Update the locations if they're available
         if (v.direction.equals("v")) {
             board[row][col] = v;
             board[row + 1][col] = v;
